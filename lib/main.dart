@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "./question.dart";
+import "./answer.dart";
 
 void main() {
   runApp(MyApp());
@@ -14,20 +15,34 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final questions = const [
+    {
+      "questionText": 'whats your favorite color?',
+      'answers': ['Black', 'Red', 'Green', 'White']
+    },
+    {
+      "questionText": 'whats your favorite animal',
+      'answers': ['bear', 'Rabbit', 'Snake', 'Elephant']
+    },
+    {
+      "questionText": 'who is your favorite instructor?',
+      'answers': ['Max', 'Rabbit', 'Snake', 'Elephant']
+    },
+  ];
   var _questionIndex = 0;
 
-  void answerQuestion() {
+  void _answerQuestion() {
     setState(() {
-      _questionIndex = _questionIndex + 1;
+      if (_questionIndex < questions.length) {
+        _questionIndex = _questionIndex + 1;
+      } else {
+        _questionIndex = 0;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      'whats your favorite color?',
-      'whats your favorite animal',
-    ];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -35,21 +50,11 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(
           children: [
-            Question(questions[_questionIndex]),
-            RaisedButton(
-              child: Text('Answer 1'),
-              onPressed: answerQuestion,
-            ),
-            RaisedButton(
-              child: Text('Answer 2'),
-              onPressed: () => print('Answer 2 chosen!'),
-            ),
-            RaisedButton(
-              child: Text('Answer 3'),
-              onPressed: () {
-                print('answer 3 chosen');
-              },
-            ),
+            Question(questions[_questionIndex]['questionText']),
+            ...(questions[_questionIndex]['answers'] as List<String>)
+                .map((answer) {
+              return Answer(_answerQuestion, answer);
+            }).toList()
           ],
         ),
       ),
